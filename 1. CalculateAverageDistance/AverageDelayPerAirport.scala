@@ -88,5 +88,16 @@ val airportSumCount=airportTotalDelay.join(airportCount)
 //Calculate average delay per airport
 val airportAvgDelay=airportSumCount.mapValues(x => x._1/x._2.toDouble)
 
-//Print first 10 results
+//Top 10 airports based on delay
 airportAvgDelay.sortBy(-_._2).take(10)
+
+//Calculate average delay using combineByKey
+val airportSumCount2=airportDelays.combineByKey(
+                                            value => (value,1),
+                                            (acc: (Double,Int), value) =>  (acc._1 + value, acc._2+1),
+                                            (acc1: (Double,Int), acc2: (Double,Int)) => (acc1._1+acc2._1,acc1._2+acc2._2))
+
+val airportAvgDelay2=airportSumCount2.mapValues(x => x._1/x._2.toDouble)
+
+//Top 10 airports based on delay
+airportAvgDelay2.sortBy(-_._2).take(10)
